@@ -2,4 +2,4 @@
 
 #include <fmt/format.h>
 
-void static-vars-static-lib::Do() { fmt::print("static-vars-static-lib does something!\n"); }
+void static_vars_static_lib::Do() { fmt::print("static_vars_static_lib does something!\n"); }

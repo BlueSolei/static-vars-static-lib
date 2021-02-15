@@ -6,7 +6,7 @@ using namespace std;
 
 int main() {
   fmt::print("Main calling static-vars-static-lib.Do() ... \n");
-  static-vars-static-lib static-vars-static-lib;
-  static-vars-static-lib.Do();
+  static_vars_static_lib static_vars_static_lib;
+  static_vars_static_lib.Do();
   return 0;
 }

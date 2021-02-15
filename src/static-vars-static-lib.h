@@ -1,6 +1,6 @@
 #pragma once
 
-class static-vars-static-lib {
+class static_vars_static_lib {
 public:
   void Do();
 };
