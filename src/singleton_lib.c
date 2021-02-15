@@ -1,14 +1,15 @@
 #include "singleton_lib.h"
 
-#if WIN32
-#define PUBLIC_API
+#ifdef _MSC_VER
+#pragma message("Windows library API")
+#define PUBLIC_API 
 #define PRIVATE_API
 #else
 #define PUBLIC_API __attribute__((visibility("default")))
 #define PRIVATE_API __attribute__((visibility("hidden")))
 #endif
 
-PRIVATE_API int gs_counter = 0;
+int PRIVATE_API gs_counter = 0;
 
 int lib_inc_counter() { return ++gs_counter; }
 
