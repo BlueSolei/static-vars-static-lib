@@ -19,8 +19,7 @@ target_link_libraries(singleton_dll singleton_lib)
 
 set(EXE_NAME ${CMAKE_PROJECT_NAME})
 add_executable(${EXE_NAME})
-target_sources(${EXE_NAME} PRIVATE # cmake-format: sortable
-                                   src/Main.cpp)
+target_sources(${EXE_NAME} PRIVATE src/main.cpp)
 get_target_property(EXE_FILES ${EXE_NAME} SOURCES)
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${EXE_FILES})
 target_link_libraries(${EXE_NAME} singleton_dll singleton_lib ${CONAN_LIBS})
