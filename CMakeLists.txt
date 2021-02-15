@@ -9,50 +9,21 @@ if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release)
 endif()
 
-include(env/conan_build_tool.cmake)
-conan_cmake_run(
-  CONANFILE
-  conanfile.txt
-  PROFILE
-  ${CONAN_PROFILE}
-  BASIC_SETUP
-  BUILD
-  missing)
-
-include(env/emscripten.cmake)
-
 set(CMAKE_CXX_STANDARD 17)
+
+add_library(singleton_lib STATIC src/singleton_lib.c src/singleton_lib.h)
+
+add_library(singleton_dll SHARED src/singleton_dll.c src/singleton_dll.h)
+target_compile_definitions(singleton_dll PRIVATE DLL_EXPORT)
+target_link_libraries(singleton_dll singleton_lib)
 
 set(EXE_NAME ${CMAKE_PROJECT_NAME})
 add_executable(${EXE_NAME})
 target_sources(${EXE_NAME} PRIVATE # cmake-format: sortable
-                                   src/Main.cpp src/static-vars-static-lib.cpp src/static-vars-static-lib.h)
+                                   src/Main.cpp)
 get_target_property(EXE_FILES ${EXE_NAME} SOURCES)
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${EXE_FILES})
-target_link_libraries(${EXE_NAME} ${CONAN_LIBS})
+target_link_libraries(${EXE_NAME} singleton_dll singleton_lib ${CONAN_LIBS})
 if(WIN32)
   target_compile_definitions(${EXE_NAME} PRIVATE UNICODE _UNICODE)
 endif()
-
-if(EMSCRIPTEN)
-  wasemize_exe(${EXE_NAME})
-endif()
-
-# Tests
-set(TEST_NAME ${EXE_NAME}Test)
-add_executable(${TEST_NAME})
-target_sources(
-  ${TEST_NAME}
-  PRIVATE # cmake-format: sortable
-          src/static-vars-static-lib.cpp src/static-vars-static-lib.h tests/static-vars-static-libTest.cpp tests/Main.cpp)
-get_target_property(TEST_FILES ${TEST_NAME} SOURCES)
-source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${TEST_FILES})
-target_link_libraries(${TEST_NAME} ${CONAN_LIBS})
-if(WIN32)
-  target_compile_definitions(${TEST_NAME} PRIVATE UNICODE _UNICODE)
-endif()
-
-# install( DIRECTORY ${CMAKE_SOURCE_DIR}/env/ DESTINATION
-# ${CMAKE_RUNTIME_OUTPUT_DIRECTORY} FILES_MATCHING PATTERN "*.*" PERMISSIONS
-# OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ) FILES ${CMAKE_SOURCE_DIR}/env
-# DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
